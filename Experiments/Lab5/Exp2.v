@@ -1,28 +1,45 @@
-module encoder4to2_dl(i, y);
+module dff(D, clk, Q, reset);
 
-input [3:0] i;
-output [1:0] y;
+input D, clk, reset;
+output Q;
+reg Q;
 
-assign y[0] = i[1]|i[3];
-assign y[1] = i[2]|i[3];
+always @(posedge clk)
+if (reset) begin
+	Q = 0;
+end
+else begin
+	Q = D;
+end
 
 endmodule
 
-module encoder4to2_dl_tb;
+module johnson_counter(reset, clk, Q);
 
-reg [3:0] i;
-wire [1:0] y;
+input reset, clk;
+output [3:0] Q;
 
-encoder4to2_dl e1(i, y);
+dff i1(~Q[0], clk, Q[3], reset);
+dff i2(Q[3], clk, Q[2], reset);
+dff i3(Q[2], clk, Q[1], reset);
+dff i4(Q[1], clk, Q[0], reset);
 
-initial
+endmodule
+
+module johnson_counter_tb;
+
+reg reset, clk;
+wire [3:0] Q;
+
+johnson_counter i(reset, clk, Q);
+
+always #5 clk = ~clk;
+
+initial 
 begin
-	i = 4'b0000;
-	$monitor("Time:%f, i=%4b, y=%2b", $time,i, y );
-	#5 i = 4'b0001;
-	#5 i = 4'b0010;
-	#5 i = 4'b0100;
-	#5 i = 4'b1000;
+	clk=1'b0; reset=1'b1;
+	$monitor("Time:%f, clk=%b, Q=%4b", $time, clk, Q);
+	#10 reset = 1'b0;
+	#100 $finish;
 end
-
 endmodule
