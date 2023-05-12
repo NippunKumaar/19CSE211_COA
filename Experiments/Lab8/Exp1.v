@@ -3,7 +3,7 @@ input clk, write_enable, rst;
 input [3:0] rw;
 input [3:0] busw;
 output [3:0] q; 
-reg [3:0] register_file [3:0];
+reg [3:0] register_file [15:0];
 integer i;
 always @ (posedge clk)
 begin
@@ -19,6 +19,7 @@ begin
 		register_file[rw] = busw;
 	end
 end
+assign q = register_file[rw];
 endmodule
 
 module write_reg_tb;

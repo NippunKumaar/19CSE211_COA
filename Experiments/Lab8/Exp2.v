@@ -2,7 +2,7 @@ module read_reg(clk, rst, ra, rb, busa, busb);
 input clk, rst;
 input [3:0] ra, rb;
 output reg [3:0] busa, busb;
-reg [3:0] register_file [3:0];
+reg [3:0] register_file [15:0];
 integer i;
 always @ (posedge clk)
 begin
